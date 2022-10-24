@@ -1,3 +1,5 @@
+FROM composer:2
+
 ARG UID
 ARG GID
 
