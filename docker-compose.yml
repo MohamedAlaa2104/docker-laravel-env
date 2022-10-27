@@ -49,6 +49,8 @@ services:
       - ./src:/var/www/html
     entrypoint: ["npm"]
     working_dir: /var/www/html
+    environment:
+      - NODE_OPTIONS="--openssl-legacy-provider"
   artisan:
     build:
       context: .
