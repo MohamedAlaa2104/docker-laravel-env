@@ -24,16 +24,22 @@ RUN apk add --no-cache mysql-client msmtp perl wget procps shadow libzip libpng 
 # Install build dependencies, PHP extensions, and clean up
 RUN apk add --no-cache --virtual build-essentials \
     icu-dev icu-libs zlib-dev g++ make automake autoconf libzip-dev \
-    libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev && \
+    libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev linux-headers && \
     docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-install gd && \
     docker-php-ext-install mysqli && \
     docker-php-ext-install pdo_mysql && \
+    docker-php-ext-configure intl && \
     docker-php-ext-install intl && \
     docker-php-ext-install opcache && \
     docker-php-ext-install exif && \
     docker-php-ext-install zip && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
     apk del build-essentials && rm -rf /usr/src/php*
+
+COPY ./xdebug.ini "${PHP_INI_DIR}/conf.d"
+
 
 # Command to run PHP-FPM
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]

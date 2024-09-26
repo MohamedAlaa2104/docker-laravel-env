@@ -30,6 +30,7 @@ services:
         - GID=${GID:-1000}
     volumes:
       - ./src:/var/www/html
+    user: "${UID:-1000}:${GID:-1000}"
   composer:
     build:
       context: .
@@ -42,11 +43,16 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     working_dir: /var/www/html
   npm:
-    image: node:current-alpine
+    image: node:18-alpine
     volumes:
       - ./src:/var/www/html
-    entrypoint: ["npm"]
+    entrypoint: ["/bin/sh", "-c"]
     working_dir: /var/www/html
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    user: "${UID:-1000}:${GID:-1000}"
     environment:
       - NODE_OPTIONS="--openssl-legacy-provider"
   artisan:
